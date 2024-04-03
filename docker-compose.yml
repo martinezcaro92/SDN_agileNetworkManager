@@ -6,22 +6,22 @@ services:
       context: ./src/app
       dockerfile: Dockerfile
     command: |
-      bash -c 'while !</dev/tcp/rabbitmq/15672; do sleep 5; done; uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8003'
+      bash -c 'uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8003'
     volumes:
       - ./src/app:/usr/src/app/
     ports:
       - 8003:8003
 
-  mock:
-    build: 
-      context: ./src/mocks
-      dockerfile: Dockerfile
-    command: |
-      bash -c 'uvicorn sdn_controllers:app --reload --workers 1 --host 0.0.0.0 --port 8004'
-    volumes:
-      - ./src/mocks:/usr/src/mocks/
-    ports:
-      - 8004:8004
+#  mock:
+#    build: 
+#      context: ./src/mocks
+#      dockerfile: Dockerfile
+#    command: |
+#      bash -c 'uvicorn sdn_controllers:app --reload --workers 1 --host 0.0.0.0 --port 8004'
+#    volumes:
+#      - ./src/mocks:/usr/src/mocks/
+#    ports:
+#      - 8004:8004
     # environment:
     #   - DATABASE_URL=postgresql://hello_fastapi:hello_fastapi@db/hello_fastapi_dev
     # networks:
@@ -68,26 +68,26 @@ services:
     # networks:
     #   - tsn_cm_network
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: "admin"
-      RABBITMQ_DEFAULT_PASS: "admin123"
-      RABBITMQ_DEFAULT_VHOST: "/"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    # networks:
-    #   - tsn_cm_network
+#  rabbitmq:
+#    image: rabbitmq:3-management
+#    container_name: rabbitmq
+#    restart: always
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+#    environment:
+#      RABBITMQ_DEFAULT_USER: "admin"
+#      RABBITMQ_DEFAULT_PASS: "admin123"
+#      RABBITMQ_DEFAULT_VHOST: "/"
+#    volumes:
+#      - rabbitmq_data:/var/lib/rabbitmq
+#    # networks:
+#    #   - tsn_cm_network
 
 volumes:
   postgres_data:
   mongodb_data:
-  rabbitmq_data:
+  # rabbitmq_data:
 
 # networks:
 #   tsn-cm:

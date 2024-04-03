@@ -44,6 +44,14 @@ class Node (BaseModel):
     l2_node_attributes: dict
     l3_node_attributes: dict
 
+    def to_dict(self):
+        return {
+            'node_id': self.node_id,
+            'termination_point': self.termination_point,
+            'l2_node_attributes': self.l2_node_attributes,
+            'l3_node_attributes': self.l3_node_attributes
+        }
+
 class Link (BaseModel):
     link_id: str
     source: dict
@@ -51,18 +59,82 @@ class Link (BaseModel):
     l2_link_attributes: dict
     l3_link_attributes: dict
 
+    def to_dict(self):
+        return {
+            'link_id': self.link_id,
+            'source': self.source,
+            'destination': self.destination,
+            'l2_link_attributes': self.l2_link_attributes,
+            'l3_link_attributes': self.l3_link_attributes
+        }
+
+# class Network (BaseModel):
+#     network_id: str
+#     network_types: dict
+#     node: List[Node]
+#     link: List[Link]
+#     l2_topology_attributes: dict
+#     l3_topology_attributes: dict
+
+#     def to_dict(self):
+#         node_dicts = [node.dict() for node in self.node]
+#         link_dicts = [link.dict() for link in self.link]
+#         return {
+#             "network_id": self.network_id,
+#             "network_types": self.network_types,
+#             "node": node_dicts,
+#             "link": link_dicts,
+#             "l2_topology_attributes": self.l2_topology_attributes,
+#             "l3_topology_attributes": self.l3_topology_attributes
+#         }
+
+# class Networks (BaseModel):
+#     network = List[Network]
+#     def to_dict(self):
+#         network_dicts = [network.dict() for network in self.network]
+#         return { "network": network_dicts}
+
+# class IetfNetwork (BaseModel):
+#     ietf_network = Networks
+
 class Topology (BaseModel):
     network_id: str
     network_types: dict
-    node: Node
-    link: Link
+    node: List[Node]
+    link: List[Link]
     l2_topology_attributes: dict
     l3_topology_attributes: dict
 
+    def to_dict(self):
+        node_dicts = [node.dict() for node in self.node]
+        link_dicts = [link.dict() for link in self.link]
+        return {
+            "network_id": self.network_id,
+            "network_types": self.network_types,
+            "node": node_dicts,
+            "link": link_dicts,
+            "l2_topology_attributes": self.l2_topology_attributes,
+            "l3_topology_attributes": self.l3_topology_attributes
+        }
+class TopologyList (BaseModel):
+    network: List[Topology]
+    def to_dict(self):
+        network_dicts = [network.dict() for network in self.network]
+        return { "network": network_dicts}
+
+
 class TopologyComplete (BaseModel):
     topology_id: str
-    source_controller: str
     network: List[Topology]
+
+    def to_dict(self):
+        network_dict = [topology.to_dict() for topology in self.network]
+        return {
+            'ietf-network:networks': {
+                "topology_id": self.topology_id,
+                "network": network_dict
+            }
+        }
 
 
 class Flow (BaseModel):
@@ -87,9 +159,7 @@ class FlowWithID (BaseModel):
 
 
 class BadRequest (BaseModel):
-    code: int = 400
-    message: str = "Bad request"
+    detail: str = "Bad request"
 
 class Deleted (BaseModel):
-    code: int = 200
-    message: str = "Successfully deleted"
+    detail: str = "Successfully deleted"

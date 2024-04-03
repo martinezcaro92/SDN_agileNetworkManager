@@ -25,12 +25,10 @@ async def get_controllers():
 
     try:
         res = db.get_all_data('controllers')
+        return res
     except Exception as e:
         print('E!: ' + str(e))
         raise HTTPException(status_code=400, detail=BadRequest)
-    
-    return res
-
 
 # Endpoint POST /controllers
 # @router.post("/", description="Registers a new controller in the system", summary="Registers a new controller in the system",
@@ -44,40 +42,12 @@ async def post_controllers(controller: Controller):
     try:
         controller_with_id = ControllerWithID(controller_id=str(uuid4()), name=controller.name, description=controller.description, url=controller.url, port=controller.port, username=controller.username, password=controller.password, type=controller.type)
         db.store_data(dict(controller_with_id), 'controllers')
+        return controller_with_id
     except Exception as e:
         print('E!: ' + str(e))
         raise HTTPException(status_code=400, detail=BadRequest)
 
-    return controller_with_id
     # print(json.dumps(controller))
-
-
-# Endpoint GET /controllers/tsn
-@router.get("/tsn", description="Returns the controllers with type tsn", summary="Returns the controllers with type tsn",
-                     responses={200: {"model": List[ControllerWithID], "description": "Successful Response"}, 404: {"model": BadRequest, "description": "Item not found"}})
-async def get_tsn_controllers():
-
-    try:
-        res = db.get_data_by_property("type", "tsn",'controllers')
-    except Exception as e:
-        print('E!: ' + str(e))
-        raise HTTPException(status_code=400, detail=BadRequest)
-    
-    return res
-
-
-# Endpoint GET /controllers/metro
-@router.get("/metro", description="Returns the controllers with type metro", summary="Returns the controllers with type metro",
-                     responses={200: {"model": List[ControllerWithID], "description": "Successful Response"}, 404: {"model": BadRequest, "description": "Item not found"}})
-async def get_tsn_controllers():
-
-    try:
-        res = db.get_data_by_property("type", "metro",'controllers')
-    except Exception as e:
-        print('E!: ' + str(e))
-        raise HTTPException(status_code=400, detail=BadRequest)    
-    return res
-
 
 
 # Endpoint GET /controllers/{controller_id}
@@ -101,11 +71,11 @@ async def get_controllers_by_id(controller_id: str):
                      responses={200: {"model": ControllerWithID, "description": "Successful Response"}, 404: {"model": BadRequest, "description": "Item not found"}})
 async def put_controllers_by_id(controller_id: str, controller: Controller):
     try:
-        res = db.update_data_by_id(controller_id, dict(controller), 'controllers')
+        res = db.update_data_by_id('controller_id',controller_id, dict(controller), 'controllers')
+        return res
     except Exception as e:
         print('E!: ' + str(e))
         raise HTTPException(status_code=400, detail=BadRequest)    
-    return res
 
 # Endpoint DELETE /controllers/{controller_id}
 @router.delete("/{controller_id}", description="Deletes the registered controller by id", summary="Deletes the registered controller by id",
@@ -114,10 +84,10 @@ async def delete_controllers_by_id(controller_id: str):
 
     try:
         res = db.delete_data_by_property('controller_id', controller_id, 'controllers')
+        return {'detail': 'Successfully deleted'}
     except Exception as e:
         print('E!: ' + str(e))
         raise HTTPException(status_code=400, detail=BadRequest)    
-    return {'code': 200, 'message': 'Successfully deleted'}
 
 # Endpoint DELETE /controllers/{controller_id}
 @router.delete("/", description="Deletes all the registered controller by id", summary="Deletes all the registered controller by id",
@@ -126,9 +96,10 @@ async def delete_all_controllers():
 
     try:
         res = db.delete_all_data('controllers')
+        if res == True:    
+            return {'detail': 'Successfully deleted'}
     except Exception as e:
         print('E!: ' + str(e))
         raise HTTPException(status_code=400, detail=BadRequest)
-    if res == True:    
-        return {'code': 200, 'message': 'Successfully deleted'}
+
 
