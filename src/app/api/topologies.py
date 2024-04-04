@@ -82,7 +82,7 @@ async def delete_all_topologies():
     try:
         res = db.delete_all_data('topology')
         if res == True:    
-            return {'message': 'Successfully deleted'}
+            return {'detail': 'Successfully deleted'}
     except Exception as e:
         print('E!: ' + str(e))
         raise HTTPException(status_code=400, detail=str(e))
@@ -94,15 +94,13 @@ async def delete_all_topologies():
 async def delete_topology_by_id(topology_id: str):
 
 
-    collections = ['topology']
     try:
-        for col in collections:
-            res = db.delete_data_by_property('topology_id',topology_id, col)
-            if res == {"message": "ERROR"}: raise HTTPException()
-            return {'message': 'Successfully deleted'} 
+        res = db.delete_data_by_property('topology_id',topology_id, 'topology')
+        if res == {"message": "ERROR"}: raise HTTPException()
+        return {'detail': 'Successfully deleted'} 
 
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail="Bad Request")
     
 # # Endpoint GET /topologies/{topology_id}/summary
 # @router.get("/{topology_id}/summary", description="Returns updated topology info by id.", summary="Return a topology by id",

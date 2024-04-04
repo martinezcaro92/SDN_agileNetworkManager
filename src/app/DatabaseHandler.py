@@ -80,12 +80,14 @@ class DatabaseHandler:
         collection = self.db[collection_name]
         
         data = []
-        for col in collection.find({str(property): property_value}):
+        # data = collection.find_one({f"ietf-network:networks.{str(property)}": property_value})
+        # for col in collection.find({str(property): property_value}):
+        for col in collection.find({f"ietf-network:networks.{str(property)}": property_value}):
             del col['_id']
             data.append(col)
 
         if len(data) != 1: return {"message": "ERROR"}
-        return collection.delete_one({str(property): property_value})
+        return collection.delete_one({f"ietf-network:networks.{str(property)}": property_value})
 
     def delete_all_data(self, collection_name):
         collection = self.db[collection_name]

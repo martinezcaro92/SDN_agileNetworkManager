@@ -68,35 +68,6 @@ class Link (BaseModel):
             'l3_link_attributes': self.l3_link_attributes
         }
 
-# class Network (BaseModel):
-#     network_id: str
-#     network_types: dict
-#     node: List[Node]
-#     link: List[Link]
-#     l2_topology_attributes: dict
-#     l3_topology_attributes: dict
-
-#     def to_dict(self):
-#         node_dicts = [node.dict() for node in self.node]
-#         link_dicts = [link.dict() for link in self.link]
-#         return {
-#             "network_id": self.network_id,
-#             "network_types": self.network_types,
-#             "node": node_dicts,
-#             "link": link_dicts,
-#             "l2_topology_attributes": self.l2_topology_attributes,
-#             "l3_topology_attributes": self.l3_topology_attributes
-#         }
-
-# class Networks (BaseModel):
-#     network = List[Network]
-#     def to_dict(self):
-#         network_dicts = [network.dict() for network in self.network]
-#         return { "network": network_dicts}
-
-# class IetfNetwork (BaseModel):
-#     ietf_network = Networks
-
 class Topology (BaseModel):
     network_id: str
     network_types: dict

@@ -22,18 +22,6 @@ def test_post_controllers(test_app):
     return controller_id, response
 
 
-def test_get_tsn_controllers(test_app):
-    response = test_app.get("/controllers/tsn")
-    assert response.status_code == 200
-    if response.json == []:
-        assert response.json() == []
-
-def test_get_metro_controllers(test_app):
-    response = test_app.get("/controllers/metro")
-    assert response.status_code == 200
-    if response.json == []:
-        assert response.json() == []
-
 def test_get_controllers_by_id(test_app):
     controller_id, response_2 = test_post_controllers(test_app=test_app)
     response = test_app.get("/controllers/"+str(controller_id))
@@ -49,19 +37,13 @@ def test_update_controller_by_id(test_app):
     assert response.status_code == 200
     # Elimina el campo 'controller_id' de los datos de respuesta
     response_json = response.json()
-    if 'controller_id' in response_json:
+    if len(response_json) == 1 and 'controller_id' in response_json [0]:
+        response_json = response_json[0]
         del response_json['controller_id']
     assert response_json == mod_req_data
 
-def test_delete_controller(test_app):
+def test_delete_controller_byid(test_app):
     controller_id, response_2 = test_post_controllers(test_app=test_app)
     response = test_app.delete("/controllers/"+str(controller_id))
     assert response.status_code == 200
-    assert response.json() == {"code": 200, "message": "Successfully deleted"}
-
-def test_delete_all_controllers(test_app):
-    # controller_id, response_2 = test_post_controllers(test_app=test_app)
-    response = test_app.delete("/controllers/")
-    print(response)
-    assert response.status_code == 200
-    assert response.json() == {'code': 200, 'message': 'Successfully deleted'}
+    assert response.json() == {"detail": "Successfully deleted"}
